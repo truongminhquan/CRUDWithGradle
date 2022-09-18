@@ -1,0 +1,58 @@
+allprojects {
+    group 'me.loda.springboot'
+    version '1.0-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+buildscript {
+    ext {
+        springBootVersion = '2.7.3'
+        springManagementVersion = '1.0.13.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:${springManagementVersion}")
+    }
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    sourceCompatibility = '17'
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.flywaydb:flyway-core'
+    }
+
+}
+
+project(':web'){
+    dependencies {
+        implementation project(':service')
+        implementation project(':domain')
+    }
+}
+
+project(':service'){
+    dependencies {
+        implementation project(':repository')
+        implementation project(':domain')
+    }
+}
+
+project(':repository'){
+    dependencies {
+        implementation project(':domain')
+    }
+}
